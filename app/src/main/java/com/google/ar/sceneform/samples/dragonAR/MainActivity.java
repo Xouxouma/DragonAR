@@ -115,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     initButtons();
-
-    Toast.makeText(this, "Numbers of dragons" + dbh.numberOfDragons(), Toast.LENGTH_LONG).show();
   }
 
     private void getDragonFromDB() {
