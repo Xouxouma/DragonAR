@@ -34,10 +34,10 @@
             android:layout_width="129dp"
             android:layout_height="50dp">
             <ImageView
-                android:id="@+id/imageViewSasiety"
+                android:id="@+id/imageViewSatiety"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/satiety" />
+                app:srcCompat="@drawable/satiety"/>
 
             <ProgressBar
                 android:id="@+id/progressBarSatiety"
@@ -45,8 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:max="5"
-                android:progress="3" />
+                android:max="50" />
 
         </LinearLayout>
 
@@ -58,7 +57,7 @@
                 android:id="@+id/imageViewHappiness"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/happiness" />
+                app:srcCompat="@drawable/happiness"/>
 
             <ProgressBar
                 android:id="@+id/progressBarHappiness"
@@ -66,8 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:max="5"
-                android:progress="3" />
+                android:max="50" />
 
         </LinearLayout>
 
@@ -79,7 +77,7 @@
                 android:id="@+id/imageViewEnergy"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/energy" />
+                app:srcCompat="@drawable/energy"/>
 
             <ProgressBar
                 android:id="@+id/progressBarEnergy"
@@ -87,8 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:max="5"
-                android:progress="3" />
+                android:max="50" />
 
         </LinearLayout>
     </LinearLayout>

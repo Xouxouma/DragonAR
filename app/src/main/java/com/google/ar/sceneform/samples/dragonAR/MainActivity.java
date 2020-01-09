@@ -30,6 +30,8 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
@@ -56,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
   private DatabaseHandler dbh;
   private Dragon dragon;
 
+  private ProgressBar progressBarSatiety;
+  private ProgressBar progressBarHappiness;
+  private ProgressBar progressBarEnergy;
+  private double startSleepTime;
+
     @Override
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
   // CompletableFuture requires api level 24
@@ -66,11 +73,16 @@ public class MainActivity extends AppCompatActivity {
     if (!checkIsSupportedDeviceOrFinish(this)) {
       return;
     }
+    setContentView(R.layout.activity_ux);
+
     dbh = new DatabaseHandler(this);
+    progressBarSatiety = findViewById(R.id.progressBarSatiety);
+    progressBarHappiness = findViewById(R.id.progressBarHappiness);
+    progressBarEnergy = findViewById(R.id.progressBarEnergy);
     getDragonFromDB();
 
-    setContentView(R.layout.activity_ux);
     arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+
 
     // When you build a Renderable, Sceneform loads its resources in the background while returning
     // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
@@ -128,12 +140,18 @@ public class MainActivity extends AppCompatActivity {
                     c.getInt(c.getColumnIndex("happiness")),
                     c.getInt(c.getColumnIndex("energy"))
             );
+            c.close();
         }
         else {
             Toast.makeText(getApplicationContext(), "No dragon found in db", Toast.LENGTH_LONG).show();
             dragon = new Dragon("TMPDragon", GenderEnum.MASCULIN);
         }
-  }
+        progressBarSatiety.setProgress(dragon.getSatiety()*10);
+        progressBarHappiness.setProgress(dragon.getHappiness()*10);
+        progressBarEnergy.setProgress(dragon.getEnergy()*10);
+        TextView textViewName = findViewById(R.id.textViewName);
+        textViewName.setText(dragon.getName());
+    }
 
     void initButtons(){
         // Feed
@@ -149,17 +167,41 @@ public class MainActivity extends AppCompatActivity {
   }
 
     private void sleep() {
+        int start_energy = dragon.getEnergy();
         Toast.makeText(getApplicationContext(), "SLEEPING...", Toast.LENGTH_LONG).show();
+        if(!dragon.isSleeping) {
+            findViewById(R.id.buttonSleep).setBackgroundResource(R.drawable.wakeup);
+            startSleepTime = dragon.startSleep();
+        }
+        else {
+            findViewById(R.id.buttonSleep).setBackgroundResource(R.drawable.sleep);
+            dragon.wakeUp(startSleepTime);
+            ProgressBarAnimation anim = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
+            anim.setDuration(1000);
+            progressBarEnergy.startAnimation(anim);
+        }
     }
 
     private void play() {
         Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
+        ProgressBarAnimation anim = new ProgressBarAnimation(progressBarHappiness, dragon.getHappiness() * 10, (dragon.getHappiness() + 1) * 10);
+        anim.setDuration(1000);
+        progressBarHappiness.startAnimation(anim);
+
+        dragon.setHappiness(dragon.getHappiness() + 1);
     }
 
     void feed(){
-      Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
-      dragon.feed();
+        Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
+        int start_satiety = dragon.getSatiety();
+        dragon.feed();
+
+        ProgressBarAnimation anim = new ProgressBarAnimation(progressBarSatiety, start_satiety * 10, (dragon.getSatiety() + 1) * 10);
+        anim.setDuration(1000);
+        progressBarSatiety.startAnimation(anim);
+
     }
+
 
 
   /**
