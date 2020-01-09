@@ -28,7 +28,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertJob(Dragon dragon) {
+    public void insertDragon(Dragon dragon) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", dragon.getName());

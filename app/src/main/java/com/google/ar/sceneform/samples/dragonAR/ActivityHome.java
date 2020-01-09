@@ -13,6 +13,7 @@ import android.widget.Button;
 public class ActivityHome extends AppCompatActivity {
 
     private static int SPLASH_TIME_OUT = 3000;
+    private DatabaseHandler db = new DatabaseHandler(ActivityHome.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,16 @@ public class ActivityHome extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent homeIntent = new Intent(ActivityHome.this, MainActivity.class);
-                startActivity(homeIntent);
-                finish();
+                if (db.numberOfDragons() == 0) {
+                    Intent homeIntent = new Intent(ActivityHome.this, CreateDragonActivity.class);
+                    startActivity(homeIntent);
+                    finish();
+                }
+                else {
+                    Intent homeIntent = new Intent(ActivityHome.this, MainActivity.class);
+                    startActivity(homeIntent);
+                    finish();
+                }
             }
         }, SPLASH_TIME_OUT);
 
