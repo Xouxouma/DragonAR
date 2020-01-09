@@ -38,7 +38,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("happiness", dragon.getHappiness());
         values.put("energy", dragon.getEnergy());
         values.put("color", dragon.getIntColor());
-        long dragonId = db.insert("Dragon", null, values);
+        long dragonId = db.insert("Dragons", null, values);
     }
 
     public int numberOfDragons(){

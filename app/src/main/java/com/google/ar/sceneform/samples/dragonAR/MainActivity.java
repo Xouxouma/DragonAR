@@ -120,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
     private void getDragonFromDB() {
         SQLiteDatabase db = dbh.getReadableDatabase();
         Cursor c  = db.rawQuery("SELECT * FROM Dragons ORDER BY id DESC LIMIT 1;", null);
-        if ((c != null) && (c.getCount() > 0)) {
+        if (c.moveToFirst()) {
+            Toast.makeText(getApplicationContext(), "Dragon found in db", Toast.LENGTH_LONG).show();
             dragon = new Dragon(
                     c.getString(c.getColumnIndex("name")),
                     c.getInt(c.getColumnIndex("gender")),
