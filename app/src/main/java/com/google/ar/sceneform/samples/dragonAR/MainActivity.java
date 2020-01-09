@@ -136,16 +136,31 @@ public class MainActivity extends AppCompatActivity {
   }
 
     void initButtons(){
-      // Feed
-      findViewById(R.id.buttonFeed).setOnClickListener(view -> {
+        // Feed
+        findViewById(R.id.buttonFeed).setOnClickListener(view -> {
           feed();
-      });
+        });
+        findViewById(R.id.buttonPlay).setOnClickListener(view -> {
+            play();
+        });
+        findViewById(R.id.buttonSleep).setOnClickListener(view -> {
+            sleep();
+        });
   }
 
-  void feed(){
+    private void sleep() {
+        Toast.makeText(getApplicationContext(), "SLEEPING...", Toast.LENGTH_LONG).show();
+    }
+
+    private void play() {
+        Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
+    }
+
+    void feed(){
       Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
       dragon.feed();
-  }
+    }
+
 
   /**
    * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
