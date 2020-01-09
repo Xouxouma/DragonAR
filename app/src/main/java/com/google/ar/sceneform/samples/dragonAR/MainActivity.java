@@ -18,6 +18,8 @@ package com.google.ar.sceneform.samples.dragonAR;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -51,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
   private boolean dragonHere = false;
 
-  @Override
+  private DatabaseHandler dbh;
+  private Dragon dragon;
+
+    @Override
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
   // CompletableFuture requires api level 24
   // FutureReturnValueIgnored is not valid
@@ -61,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     if (!checkIsSupportedDeviceOrFinish(this)) {
       return;
     }
+    dbh = new DatabaseHandler(this);
+    getDragonFromDB();
 
     setContentView(R.layout.activity_ux);
     arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
@@ -110,11 +117,34 @@ public class MainActivity extends AppCompatActivity {
     initButtons();
   }
 
-  void initButtons(){
+    private void getDragonFromDB() {
+        SQLiteDatabase db = dbh.getReadableDatabase();
+        Cursor c  = db.rawQuery("SELECT * FROM Dragons ORDER BY id DESC LIMIT 1;", null);
+        if ((c != null) && (c.getCount() > 0)) {
+            dragon = new Dragon(
+                    c.getString(c.getColumnIndex("name")),
+                    c.getInt(c.getColumnIndex("gender")),
+                    c.getInt(c.getColumnIndex("satiety")),
+                    c.getInt(c.getColumnIndex("happiness")),
+                    c.getInt(c.getColumnIndex("energy"))
+            );
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "No dragon found in db", Toast.LENGTH_LONG).show();
+            dragon = new Dragon("TMPDragon", GenderEnum.MASCULIN);
+        }
+  }
+
+    void initButtons(){
       // Feed
       findViewById(R.id.buttonFeed).setOnClickListener(view -> {
-              Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
+          feed();
       });
+  }
+
+  void feed(){
+      Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
+      dragon.feed();
   }
 
   /**

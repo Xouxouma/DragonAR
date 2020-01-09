@@ -127,4 +127,17 @@ public class Dragon {
             this.energy=5;
     }
 
+    public Dragon(String name, int gender, int satiety, int happiness, int energy) {
+        this.name = name;
+        this.gender = GenderEnum.fromInteger(gender);
+        this.satiety = satiety;
+        this.happiness = happiness;
+        this.energy = energy;
+
+        if (this.gender == GenderEnum.MASCULIN)
+            this.color = ColorEnum.NOIR;
+
+        else
+            this.color = ColorEnum.BLANC;
+    }
 }
