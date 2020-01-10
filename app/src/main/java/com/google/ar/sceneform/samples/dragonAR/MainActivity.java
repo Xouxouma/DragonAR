@@ -20,6 +20,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -79,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
     progressBarSatiety = findViewById(R.id.progressBarSatiety);
     progressBarHappiness = findViewById(R.id.progressBarHappiness);
     progressBarEnergy = findViewById(R.id.progressBarEnergy);
+
+    progressBarSatiety.getProgressDrawable().setColorFilter(Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN);
+    progressBarHappiness.getProgressDrawable().setColorFilter(Color.CYAN, android.graphics.PorterDuff.Mode.SRC_IN);
+    progressBarEnergy.getProgressDrawable().setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.SRC_IN);
+    
     getDragonFromDB();
 
     arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);

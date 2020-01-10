@@ -27,8 +27,10 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="149dp"
-        android:orientation="vertical">
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="10sp"
+        android:layout_marginTop="25sp">
 
         <LinearLayout
             android:layout_width="129dp"
@@ -37,7 +39,7 @@
                 android:id="@+id/imageViewSatiety"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/satiety"/>
+                app:srcCompat="@drawable/satiety3"/>
 
             <ProgressBar
                 android:id="@+id/progressBarSatiety"
@@ -51,13 +53,14 @@
 
         <LinearLayout
             android:layout_width="129dp"
-            android:layout_height="50dp">
+            android:layout_height="50dp"
+            android:layout_marginTop="10sp">
 
             <ImageView
                 android:id="@+id/imageViewHappiness"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/happiness"/>
+                app:srcCompat="@drawable/happiness2"/>
 
             <ProgressBar
                 android:id="@+id/progressBarHappiness"
@@ -65,19 +68,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:max="50" />
+                android:max="50"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="129dp"
-            android:layout_height="50dp">
+            android:layout_height="50dp"
+            android:layout_marginTop="10sp">
 
             <ImageView
                 android:id="@+id/imageViewEnergy"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/energy"/>
+                app:srcCompat="@drawable/energy2"/>
 
             <ProgressBar
                 android:id="@+id/progressBarEnergy"
@@ -109,7 +113,9 @@
             android:layout_height="187dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="10sp"
+            android:layout_marginTop="25sp">
 
             <Button
                 android:id="@+id/buttonFeed"
@@ -123,16 +129,19 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/play" />
+                android:background="@drawable/ball"
+                android:layout_marginTop="10sp"/>
 
             <Button
                 android:id="@+id/buttonSleep"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/sleep" />
+                android:background="@drawable/sleep2"
+                android:layout_marginTop="10sp"/>
 
         </LinearLayout>
+
     </android.support.constraint.ConstraintLayout>
 
 
