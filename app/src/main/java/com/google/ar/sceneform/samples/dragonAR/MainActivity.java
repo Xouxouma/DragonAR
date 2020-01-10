@@ -15,6 +15,9 @@
  */
 package com.google.ar.sceneform.samples.dragonAR;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -29,6 +32,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,8 +41,10 @@ import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.math.Vector3Evaluator;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
@@ -47,21 +53,24 @@ import com.google.ar.sceneform.ux.TransformableNode;
  * This is an example activity that uses the Sceneform UX package to make common AR tasks easier.
  */
 public class MainActivity extends AppCompatActivity {
-  private static final String TAG = MainActivity.class.getSimpleName();
-  private static final double MIN_OPENGL_VERSION = 3.0;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final double MIN_OPENGL_VERSION = 3.0;
 
-  private ArFragment arFragment;
-  private ModelRenderable andyRenderable;
+    private ArFragment arFragment;
+    private ModelRenderable andyRenderable;
+    private ModelRenderable fishRenderable;
+    private ModelRenderable ballRenderable;
 
-  private boolean dragonHere = false;
+    private boolean dragonHere = false;
 
-  private DatabaseHandler dbh;
-  private Dragon dragon;
+    private DatabaseHandler dbh;
+    private Dragon dragon;
 
-  private ProgressBar progressBarSatiety;
-  private ProgressBar progressBarHappiness;
-  private ProgressBar progressBarEnergy;
-  private double startSleepTime;
+    private ProgressBar progressBarSatiety;
+    private ProgressBar progressBarHappiness;
+    private ProgressBar progressBarEnergy;
+    private double startSleepTime;
+    private TransformableNode andy;
 
     @Override
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -99,9 +108,32 @@ public class MainActivity extends AppCompatActivity {
               return null;
             });
 
+    ModelRenderable.builder()
+            // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
+            .setSource(this, Uri.parse("13007_Blue-Green_Reef_Chromis_v2_l3.sfb"))
+            .build()
+            .thenAccept(renderable -> fishRenderable = renderable)
+            .exceptionally(
+                    throwable -> {
+                        Log.e(TAG, "Unable to load Fish Renderable.", throwable);
+                        return null;
+                    });
+
+    ModelRenderable.builder()
+            // To load as an asset from the 'assets' folder ('src/main/assets/andy.sfb'):
+            .setSource(this, Uri.parse("ball.sfb"))
+            .build()
+            .thenAccept(renderable -> ballRenderable = renderable)
+            .exceptionally(
+                    throwable -> {
+                        Log.e(TAG, "Unable to load Fish Renderable.", throwable);
+                        return null;
+                    });
+
     arFragment.setOnTapArPlaneListener(
         (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
-          if (andyRenderable == null) {
+            Toast.makeText(getApplicationContext(), "TapAr", Toast.LENGTH_LONG).show();
+            if (andyRenderable == null) {
             return;
           }
 
@@ -115,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
           anchorNode.setParent(arFragment.getArSceneView().getScene());
 
           // Create the transformable andy and add it to the anchor.
-          TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
+          andy = new TransformableNode(arFragment.getTransformationSystem());
 
           andy.getScaleController().setMaxScale(0.45f);
           andy.getScaleController().setMinScale(0.449f);
@@ -124,9 +156,11 @@ public class MainActivity extends AppCompatActivity {
           andy.setParent(anchorNode);
           andy.setRenderable(andyRenderable);
           andy.select();
+          andy.getWorldPosition();
+
+          initButtons();
         });
 
-    initButtons();
   }
 
     private void getDragonFromDB() {
@@ -189,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void play() {
         Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
+        loadBall();
         int start_happiness = dragon.getHappiness();
         int start_energy = dragon.getEnergy();
 
@@ -208,6 +243,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
         int start_satiety = dragon.getSatiety();
         int start_happiness = dragon.getHappiness();
+
+        loadFish();
         dragon.feed();
 
         ProgressBarAnimation anim = new ProgressBarAnimation(progressBarSatiety, start_satiety * 10, (dragon.getSatiety() + 1) * 10);
@@ -217,11 +254,74 @@ public class MainActivity extends AppCompatActivity {
         ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
         anim2.setDuration(1000);
         progressBarHappiness.startAnimation(anim2);
+
+    }
+
+    private void startWalking(Node node) {
+        ObjectAnimator objectAnimation = new ObjectAnimator();
+        objectAnimation.setAutoCancel(true);
+        objectAnimation.setTarget(node);
+
+        // All the positions should be world positions
+        // The first position is the start, and the second is the end.
+        objectAnimation.setObjectValues(node.getWorldPosition(), andy.getWorldPosition());
+
+        // Use setWorldPosition to position andy.
+        objectAnimation.setPropertyName("worldPosition");
+
+        // The Vector3Evaluator is used to evaluator 2 vector3 and return the next
+        // vector3.  The default is to use lerp.
+        objectAnimation.setEvaluator(new Vector3Evaluator());
+        // This makes the animation linear (smooth and uniform).
+        objectAnimation.setInterpolator(new LinearInterpolator());
+        // Duration in ms of the animation.
+        objectAnimation.setDuration(2000);
+        objectAnimation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                node.getParent().setParent(null);
+                node.setParent(null);
+            }
+        });
+        objectAnimation.start();
+    }
+
+    void loadFish(){
+        AnchorNode anchorNode = new AnchorNode();
+        anchorNode.setLocalPosition(new Vector3(0.03f,0,-0.1f));
+        //Node node = new Node();
+        anchorNode.setParent(arFragment.getArSceneView().getScene());
+        anchorNode.setRenderable(null);
+        TransformableNode fishNode = new TransformableNode(arFragment.getTransformationSystem());
+        fishNode.setRenderable(fishRenderable);
+        fishNode.setParent(anchorNode);
+
+        //fishNode.getScaleController().setMaxScale(0.099f);
+        //fishNode.getScaleController().setMinScale(0.15f);
+        fishNode.setLocalRotation(Quaternion.axisAngle(new Vector3(3, 3, 3), 90f));
+
+        startWalking(fishNode);
+    }
+
+    void loadBall(){
+        AnchorNode anchorNode = new AnchorNode();
+        anchorNode.setLocalPosition(new Vector3(0.03f,0,-0.1f));
+        //Node node = new Node();
+        anchorNode.setParent(arFragment.getArSceneView().getScene());
+        anchorNode.setRenderable(null);
+        TransformableNode ballNode = new TransformableNode(arFragment.getTransformationSystem());
+        ballNode.setRenderable(ballRenderable);
+        ballNode.setParent(anchorNode);
+
+        //fishNode.getScaleController().setMaxScale(0.099f);
+        //fishNode.getScaleController().setMinScale(0.15f);
+        ballNode.setLocalRotation(Quaternion.axisAngle(new Vector3(3, 3, 3), 90f));
+        startWalking(ballNode);
     }
 
 
-
-  /**
+    /**
    * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
    * on this device.
    *

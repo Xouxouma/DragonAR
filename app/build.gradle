@@ -66,3 +66,19 @@ sceneform.asset('sampledata/models/Night_Fury.obj',
         'default',
         'sampledata/models/Night_Fury.sfa',
         'src/main/assets/Night_Fury')
+
+
+sceneform.asset('sampledata/models/Blue-Green_Reef_Chromis_v2_L3.123c119e966e-6768-4592-92ac-96b676247267/13007_Blue-Green_Reef_Chromis_v2_l3.obj',
+        'default',
+        'sampledata/models/Blue-Green_Reef_Chromis_v2_L3.123c119e966e-6768-4592-92ac-96b676247267/13007_Blue-Green_Reef_Chromis_v2_l3.sfa',
+        'src/main/assets/13007_Blue-Green_Reef_Chromis_v2_l3')
+
+sceneform.asset('sampledata/models/soccerball/untitled.obj',
+        'default',
+        'sampledata/models/soccerball/untitled.sfa',
+        'src/main/assets/untitled')
+
+sceneform.asset('sampledata/models/ball.obj',
+        'default',
+        'sampledata/models/ball.sfa',
+        'src/main/assets/ball')
