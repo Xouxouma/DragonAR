@@ -105,9 +105,37 @@ public class Dragon {
             this.color = ColorEnum.BLANC;
     }
 
+    public Dragon(String name, int gender, int satiety, int happiness, int energy) {
+        this.name = name;
+        this.gender = GenderEnum.fromInteger(gender);
+        this.satiety = satiety;
+        this.happiness = happiness;
+        this.energy = energy;
+
+        if (this.gender == GenderEnum.MASCULIN)
+            this.color = ColorEnum.NOIR;
+
+        else
+            this.color = ColorEnum.BLANC;
+    }
+
     public void feed() {
         if(this.satiety < 5)
             this.satiety++;
+        if(this.happiness <5)
+            this.happiness++;
+    }
+
+    public void play() {
+        if(this.happiness <4) {
+            this.happiness+=2;
+        }
+        else {
+            this.happiness = 5;
+        }
+
+        if(this.energy > 0)
+            this.energy--;
     }
 
     public double startSleep() {
@@ -125,19 +153,5 @@ public class Dragon {
 
         else
             this.energy=5;
-    }
-
-    public Dragon(String name, int gender, int satiety, int happiness, int energy) {
-        this.name = name;
-        this.gender = GenderEnum.fromInteger(gender);
-        this.satiety = satiety;
-        this.happiness = happiness;
-        this.energy = energy;
-
-        if (this.gender == GenderEnum.MASCULIN)
-            this.color = ColorEnum.NOIR;
-
-        else
-            this.color = ColorEnum.BLANC;
     }
 }

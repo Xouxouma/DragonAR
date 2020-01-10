@@ -46,4 +46,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int numRows = (int) DatabaseUtils.queryNumEntries(db, "Dragons");
         return numRows;
     }
+
+    public void updateDragon(Dragon dragon) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("level", dragon.getLevel());
+        values.put("satiety", dragon.getSatiety());
+        values.put("happiness", dragon.getHappiness());
+        values.put("energy", dragon.getEnergy());
+        db.update("Dragons", values, "_id"+dragon.getId(), null);
+    }
 }
