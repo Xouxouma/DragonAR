@@ -185,23 +185,32 @@ public class MainActivity extends AppCompatActivity {
             anim.setDuration(1000);
             progressBarEnergy.startAnimation(anim);
         }
+
+        dbh.updateDragon(dragon);
     }
 
     private void play() {
-        Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
-        int start_happiness = dragon.getHappiness();
-        int start_energy = dragon.getEnergy();
+        if (dragon.getEnergy() > 0) {
+            Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
+            int start_happiness = dragon.getHappiness();
+            int start_energy = dragon.getEnergy();
 
-        dragon.setHappiness(dragon.getHappiness() + 1);
+            dragon.play();
 
-        ProgressBarAnimation anim = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
-        anim.setDuration(1000);
-        progressBarHappiness.startAnimation(anim);
+            ProgressBarAnimation anim = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
+            anim.setDuration(1000);
+            progressBarHappiness.startAnimation(anim);
 
-        ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
-        anim2.setDuration(1000);
-        progressBarEnergy.startAnimation(anim2);
+            ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
+            anim2.setDuration(1000);
+            progressBarEnergy.startAnimation(anim2);
 
+            dbh.updateDragon(dragon);
+        }
+
+        else {
+            Toast.makeText(getApplicationContext(), "INSUFFICIENT ENERGY", Toast.LENGTH_LONG).show();
+        }
     }
 
     void feed(){
@@ -217,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
         ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
         anim2.setDuration(1000);
         progressBarHappiness.startAnimation(anim2);
+
+        dbh.updateDragon(dragon);
     }
 
 
