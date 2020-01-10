@@ -49,6 +49,8 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
+import java.text.BreakIterator;
+
 /**
  * This is an example activity that uses the Sceneform UX package to make common AR tasks easier.
  */
@@ -69,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBarSatiety;
     private ProgressBar progressBarHappiness;
     private ProgressBar progressBarEnergy;
-    private double startSleepTime;
+    private double startSleepTime = -1;
     private TransformableNode andy;
+    private TextView textViewName;
 
     @Override
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -184,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         progressBarSatiety.setProgress(dragon.getSatiety()*10);
         progressBarHappiness.setProgress(dragon.getHappiness()*10);
         progressBarEnergy.setProgress(dragon.getEnergy()*10);
-        TextView textViewName = findViewById(R.id.textViewName);
+        textViewName = findViewById(R.id.textViewName);
         textViewName.setText(dragon.getName());
     }
 
@@ -209,10 +212,14 @@ public class MainActivity extends AppCompatActivity {
         int start_energy = dragon.getEnergy();
         Toast.makeText(getApplicationContext(), "SLEEPING...", Toast.LENGTH_LONG).show();
         if(!dragon.isSleeping) {
+            textViewName.setText(dragon.getName() + "(Zzz)");
+
             findViewById(R.id.buttonSleep).setBackgroundResource(R.drawable.wakeup);
             startSleepTime = dragon.startSleep();
         }
         else {
+            startSleepTime = -1;
+            textViewName.setText(dragon.getName());
             findViewById(R.id.buttonSleep).setBackgroundResource(R.drawable.sleep);
             dragon.wakeUp(startSleepTime);
             ProgressBarAnimation anim = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
@@ -222,6 +229,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void play() {
+        if (dragon.isSleeping){
+            Toast.makeText(getApplicationContext(), "STILL SLEEPING...", Toast.LENGTH_LONG).show();
+            return;
+        }
         Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
         loadBall();
         int start_happiness = dragon.getHappiness();
@@ -240,6 +251,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void feed(){
+        if (dragon.isSleeping){
+            Toast.makeText(getApplicationContext(), "STILL SLEEPING...", Toast.LENGTH_LONG).show();
+            return;
+        }
         Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
         int start_satiety = dragon.getSatiety();
         int start_happiness = dragon.getHappiness();
