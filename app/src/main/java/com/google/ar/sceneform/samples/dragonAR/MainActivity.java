@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         anim.setDuration(1000);
         progressBarSatiety.startAnimation(anim);
 
-        ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarHappiness, start_happiness, dragon.getHappiness() * 10);
+        ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
         anim2.setDuration(1000);
         progressBarHappiness.startAnimation(anim2);
     }
