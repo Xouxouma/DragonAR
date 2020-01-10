@@ -167,6 +167,10 @@ public class MainActivity extends AppCompatActivity {
         });
   }
 
+    private void updateProgressBars(){
+
+    }
+
     private void sleep() {
         int start_energy = dragon.getEnergy();
         Toast.makeText(getApplicationContext(), "SLEEPING...", Toast.LENGTH_LONG).show();
@@ -185,22 +189,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void play() {
         Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
-        ProgressBarAnimation anim = new ProgressBarAnimation(progressBarHappiness, dragon.getHappiness() * 10, (dragon.getHappiness() + 1) * 10);
+        int start_happiness = dragon.getHappiness();
+        int start_energy = dragon.getEnergy();
+
+        dragon.setHappiness(dragon.getHappiness() + 1);
+
+        ProgressBarAnimation anim = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
         anim.setDuration(1000);
         progressBarHappiness.startAnimation(anim);
 
-        dragon.setHappiness(dragon.getHappiness() + 1);
+        ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
+        anim2.setDuration(1000);
+        progressBarEnergy.startAnimation(anim2);
+
     }
 
     void feed(){
         Toast.makeText(getApplicationContext(), "FEEDING...", Toast.LENGTH_LONG).show();
         int start_satiety = dragon.getSatiety();
+        int start_happiness = dragon.getHappiness();
         dragon.feed();
 
         ProgressBarAnimation anim = new ProgressBarAnimation(progressBarSatiety, start_satiety * 10, (dragon.getSatiety() + 1) * 10);
         anim.setDuration(1000);
         progressBarSatiety.startAnimation(anim);
 
+        ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarHappiness, start_happiness, dragon.getHappiness() * 10);
+        anim2.setDuration(1000);
+        progressBarHappiness.startAnimation(anim2);
     }
 
 
