@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
     private double startSleepTime = -1;
     private TransformableNode andy;
     private TextView textViewName;
+    private Button buttonFeed;
+    private Button buttonPlay;
+    private Button buttonSleep;
 
     @Override
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -102,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
 
     arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
 
+    buttonFeed = findViewById(R.id.buttonFeed);
+    buttonPlay = findViewById(R.id.buttonPlay);
+    buttonSleep = findViewById(R.id.buttonSleep);
+    buttonFeed.setVisibility(View.GONE);
+    buttonPlay.setVisibility(View.GONE);
+    buttonSleep.setVisibility(View.GONE);
 
     // When you build a Renderable, Sceneform loads its resources in the background while returning
     // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
@@ -142,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
     arFragment.setOnTapArPlaneListener(
         (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
-            Toast.makeText(getApplicationContext(), "TapAr", Toast.LENGTH_LONG).show();
             if (andyRenderable == null) {
             return;
           }
@@ -151,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
               return;
           }
           dragonHere = true;
+          initButtons();
+
           // Create the Anchor.
           Anchor anchor = hitResult.createAnchor();
           AnchorNode anchorNode = new AnchorNode(anchor);
@@ -168,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
           andy.select();
           andy.getWorldPosition();
 
-          initButtons();
         });
 
   }
@@ -179,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
         if (c.moveToFirst()) {
             Toast.makeText(getApplicationContext(), "Dragon found in db", Toast.LENGTH_LONG).show();
             dragon = new Dragon(
+                    c.getInt(c.getColumnIndex("id")),
                     c.getString(c.getColumnIndex("name")),
                     c.getInt(c.getColumnIndex("gender")),
                     c.getInt(c.getColumnIndex("satiety")),
@@ -199,21 +209,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void initButtons(){
-        // Feed
-        findViewById(R.id.buttonFeed).setOnClickListener(view -> {
+        buttonFeed.setVisibility(View.VISIBLE);
+        buttonPlay.setVisibility(View.VISIBLE);
+        buttonSleep.setVisibility(View.VISIBLE);
+        Toast.makeText(getBaseContext(),"Dragon pop",Toast.LENGTH_LONG).show();
+
+        buttonFeed.setOnClickListener(view -> {
           feed();
         });
-        findViewById(R.id.buttonPlay).setOnClickListener(view -> {
+        buttonPlay.setOnClickListener(view -> {
             play();
         });
-        findViewById(R.id.buttonSleep).setOnClickListener(view -> {
+        buttonSleep.setOnClickListener(view -> {
             sleep();
         });
   }
-
-    private void updateProgressBars(){
-
-    }
 
     private void sleep() {
         int start_energy = dragon.getEnergy();
@@ -223,11 +233,15 @@ public class MainActivity extends AppCompatActivity {
 
             findViewById(R.id.buttonSleep).setBackgroundResource(R.drawable.wakeup);
             startSleepTime = dragon.startSleep();
+            buttonFeed.setVisibility(View.INVISIBLE);
+            buttonPlay.setVisibility(View.INVISIBLE);
         }
         else {
             startSleepTime = -1;
+            buttonFeed.setVisibility(View.VISIBLE);
+            buttonPlay.setVisibility(View.VISIBLE);
             textViewName.setText(dragon.getName());
-            findViewById(R.id.buttonSleep).setBackgroundResource(R.drawable.sleep);
+            findViewById(R.id.buttonSleep).setBackgroundResource(R.drawable.sleep2);
             dragon.wakeUp(startSleepTime);
             ProgressBarAnimation anim = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
             anim.setDuration(1000);

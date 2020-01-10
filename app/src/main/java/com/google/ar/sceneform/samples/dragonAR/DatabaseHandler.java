@@ -54,6 +54,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("satiety", dragon.getSatiety());
         values.put("happiness", dragon.getHappiness());
         values.put("energy", dragon.getEnergy());
-        db.update("Dragons", values, "_id"+dragon.getId(), null);
+        db.update("Dragons", values, "id="+dragon.getId(), null);
     }
 }

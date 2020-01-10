@@ -105,7 +105,8 @@ public class Dragon {
             this.color = ColorEnum.BLANC;
     }
 
-    public Dragon(String name, int gender, int satiety, int happiness, int energy) {
+    public Dragon(int id, String name, int gender, int satiety, int happiness, int energy) {
+        this.id = id;
         this.name = name;
         this.gender = GenderEnum.fromInteger(gender);
         this.satiety = satiety;
