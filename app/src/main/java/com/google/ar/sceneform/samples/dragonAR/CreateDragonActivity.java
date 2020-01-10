@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class CreateDragonActivity extends AppCompatActivity {
 
@@ -22,10 +23,14 @@ public class CreateDragonActivity extends AppCompatActivity {
 
     public void addDragon(View v) {
         String name = dragon_name.getText().toString();
-        if (!name.isEmpty()) {
+        if (!name.trim().isEmpty()) {
             db.insertDragon(new Dragon(name, GenderEnum.MASCULIN));
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
+        }
+
+        else{
+            Toast.makeText(getApplicationContext(), "Please enter a name", Toast.LENGTH_LONG).show();
         }
     }
 }

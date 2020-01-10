@@ -23,6 +23,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -91,6 +93,11 @@ public class MainActivity extends AppCompatActivity {
     progressBarSatiety = findViewById(R.id.progressBarSatiety);
     progressBarHappiness = findViewById(R.id.progressBarHappiness);
     progressBarEnergy = findViewById(R.id.progressBarEnergy);
+
+    progressBarSatiety.getProgressDrawable().setColorFilter(Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN);
+    progressBarHappiness.getProgressDrawable().setColorFilter(Color.CYAN, android.graphics.PorterDuff.Mode.SRC_IN);
+    progressBarEnergy.getProgressDrawable().setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.SRC_IN);
+
     getDragonFromDB();
 
     arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
@@ -226,6 +233,8 @@ public class MainActivity extends AppCompatActivity {
             anim.setDuration(1000);
             progressBarEnergy.startAnimation(anim);
         }
+
+        dbh.updateDragon(dragon);
     }
 
     private void play() {
@@ -233,21 +242,28 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "STILL SLEEPING...", Toast.LENGTH_LONG).show();
             return;
         }
-        Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
-        loadBall();
-        int start_happiness = dragon.getHappiness();
-        int start_energy = dragon.getEnergy();
+        if (dragon.getEnergy() > 0) {
+            Toast.makeText(getApplicationContext(), "PLAYING...", Toast.LENGTH_LONG).show();
+            loadBall();
+            int start_happiness = dragon.getHappiness();
+            int start_energy = dragon.getEnergy();
 
-        dragon.setHappiness(dragon.getHappiness() + 1);
+            dragon.play();
 
-        ProgressBarAnimation anim = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
-        anim.setDuration(1000);
-        progressBarHappiness.startAnimation(anim);
+            ProgressBarAnimation anim = new ProgressBarAnimation(progressBarHappiness, start_happiness * 10, dragon.getHappiness() * 10);
+            anim.setDuration(1000);
+            progressBarHappiness.startAnimation(anim);
 
-        ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
-        anim2.setDuration(1000);
-        progressBarEnergy.startAnimation(anim2);
+            ProgressBarAnimation anim2 = new ProgressBarAnimation(progressBarEnergy, start_energy * 10, (dragon.getEnergy()) * 10);
+            anim2.setDuration(1000);
+            progressBarEnergy.startAnimation(anim2);
 
+            dbh.updateDragon(dragon);
+        }
+
+        else {
+            Toast.makeText(getApplicationContext(), "INSUFFICIENT ENERGY", Toast.LENGTH_LONG).show();
+        }
     }
 
     void feed(){
@@ -270,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
         anim2.setDuration(1000);
         progressBarHappiness.startAnimation(anim2);
 
+        dbh.updateDragon(dragon);
     }
 
     private void startWalking(Node node) {
@@ -336,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
+  /**
    * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
    * on this device.
    *

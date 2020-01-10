@@ -146,7 +146,7 @@ public class Dragon {
     public void wakeUp(double startSleepTime) {
         isSleeping = false;
         double sleepDuration = System.currentTimeMillis() - startSleepTime;
-        int wonPoints = (int) sleepDuration %3;
+        int wonPoints = (int) sleepDuration /3000;
 
         if (this.energy+wonPoints <5)
             this.energy+=wonPoints;

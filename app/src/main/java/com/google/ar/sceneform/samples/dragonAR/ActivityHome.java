@@ -1,5 +1,6 @@
 package com.google.ar.sceneform.samples.dragonAR;
 
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -23,6 +24,10 @@ public class ActivityHome extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_home);
+
+        MediaPlayer player = MediaPlayer.create(ActivityHome.this, R.raw.flyingtheme);
+        player.setLooping(true);
+        player.start();
 
         new Handler().postDelayed(new Runnable() {
             @Override
